@@ -7,33 +7,90 @@
 // Example: 5! = 5 x 4 x 3 x 2 x 1 = 120
 // factorial(5); // 120
 let factorial = function(n) {
+  if (n < 0) {
+    return null;
+  }
+  if (n === 0) {
+    return 1;
+  }
+  n = n * factorial(n - 1);
+  return n;
 };
 
 // 2. Compute the sum of an array of integers.
 // sum([1,2,3,4,5,6]); // 21
 let sum = function(array) {
+    if (array.length === 0) {
+      return 0;
+    }
+    if (array.length === 1) {
+      return array[0];
+    }
+    return array[0] + sum(array.slice(1));
 };
 
 // 3. Sum all numbers in an array containing nested arrays.
 // arraySum([1,[2,3],[[4]],5]); // 15
 let arraySum = function(array) {
-};
+  // create a result variable
+  var result = 0;
+    // for each element in the array
+  array.forEach(function(element) {
+    if (!Array.isArray(element)) {
+      result += element
+    } else {
+    result += arraySum(element);
+    }
+  })
+  return result;
+  };
 
 // 4. Check if a number is even.
 // isEven(2) // true
 // isEven(9) // false
 let isEven = function(n) {
+  n = Math.abs(n);
+  if (n === 0) {
+    return true;
+  }
+  if (n === 1) {
+    return false;
+  }
+  if (n > 1) {
+    return isEven(n - 2);
+  }
 };
 
 // 5. Sum all integers below a given integer.
 // sumBelow(10); // 45
 // sumBelow(7); // 21
 let sumBelow = function(n) {
+  if (n === 0) {
+    return n;
+  }
+  if (n < 0) {
+    return (n + 1) + sumBelow(n + 1);
+  }
+  return (n - 1) + sumBelow(n - 1);
 };
 
 // 6. Get the integers within a range (x, y).
-// range(2,9); // [3,4,5,6,7,8]
+// range(2,9); // [3,4,5,6,7,8] 2 3 4
 let range = function(x, y) {
+  var result = [];
+
+  if ((y-x) < 2 && (y-x) > -2) {
+    return result;
+  }
+
+  if (x > y) {
+    x = x - 1;
+  } else {
+    x = x + 1
+  ;}
+
+  result = result.concat(x, range(x, y));
+  return result;
 };
 
 // 7. Compute the exponent of a number.
@@ -42,25 +99,64 @@ let range = function(x, y) {
 // exponent(4,3); // 64
 // https://www.khanacademy.org/computing/computer-science/algorithms/recursive-algorithms/a/computing-powers-of-a-number
 let exponent = function(base, exp) {
+  if (exp === 0) {
+    return 1;
+  }
+  if (exp === 1 || exp === -1) {
+    return base;
+  }
+
+  if (exp < 0) {
+    exp = (exp * -1);
+    return (1 / (base * exponent(base, exp - 1)));
+  }
+
+  return base * exponent(base, exp - 1);
 };
 
 // 8. Determine if a number is a power of two.
 // powerOfTwo(1); // true
 // powerOfTwo(16); // true
 // powerOfTwo(10); // false
-let powerOfTwo = function(n) {
+let powerOfTwo = function (n) {
+  if (n == 0 || !Number.isInteger(n)) {
+    return false;
+  }
+  if (n === 1) {
+    return true;
+  }
+  n = n / 2;
+  return powerOfTwo(n);
 };
 
 // 9. Write a function that reverses a string.
-// reverse("hello"); // olleh 
+// reverse("hello"); // olleh
 let reverse = function(string) {
+  newString = '';
+  if (string.length === 0) {
+    return newString;
+  }
+  newString += string.slice(-1) + reverse(string.slice(0, -1))
+  return newString;
 };
 
 // 10. Write a function that determines if a string is a palindrome.
 // palindrome("koko") // false
 // palindrome("rotor") // true
 // palindrome("wow") // true
+//hannah
 let palindrome = function(string) {
+
+  string = string.split(' ').join('').toLowerCase();
+
+  if (string.length === 1 || string.length === 0) {
+    return true;
+  }
+  if (string[0] !== string[string.length - 1]) {
+    return false;
+  }
+
+  return palindrome(string.slice(1, -1));
 };
 
 // 11. Write a function that returns the remainder of x divided by y without using the
@@ -135,6 +231,7 @@ let rMap = function(array, callback) {
 // countKeysInObj(obj, 'r') // 1
 // countKeysInObj(obj, 'e') // 2
 let countKeysInObj = function(obj, key) {
+
 };
 
 // 23. Write a function that counts the number of times a value occurs in an object.
@@ -142,11 +239,32 @@ let countKeysInObj = function(obj, key) {
 // countValuesInObj(obj, 'r') // 2
 // countValuesInObj(obj, 'e') // 1
 let countValuesInObj = function(obj, value) {
-};
+  var count = 0;
+  for (var key in obj) {
+    if (obj[key] === value) {
+      count++;
+    };
+    if (typeof (obj[key]) === 'object') {
+      count += countValuesInObj(obj[key], value);
+    }
+  }
+  return count;
+}
 
 // 24. Find all keys in an object (and nested objects) by a provided name and rename
 // them to a provided new name while preserving the value stored at that key.
 let replaceKeysInObj = function(obj, oldKey, newKey) {
+  for (var key in obj) {
+    if (key === oldKey) {
+      Object.defineProperty(obj, newKey,
+        Object.getOwnPropertyDescriptor(obj, oldKey));
+      delete obj[oldKey];
+    }
+    if (typeof (obj[key]) === 'object') {
+      replaceKeysInObj(obj[key], oldKey, newKey)
+    }
+  }
+  return obj;
 };
 
 // 25. Get the first n Fibonacci numbers. In the Fibonacci sequence, each subsequent
